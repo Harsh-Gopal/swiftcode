@@ -1,0 +1,106 @@
+extends layout
+
+block styles
+    link(rel='stylesheet', href='/css/github.css')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700', type='text/css')
+
+block scripts
+    script(src='/js/libs/knockout-2.3.0.min.js')
+    script(src='/js/libs/highlight.min.js')
+    script(src='/js/libs/moment-2.1.0.min.js')
+    script(src='/js/libs/mousetrap.min.js')
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/game.js')
+
+block content
+    .container
+        .row
+            .col-md-4
+            .col-md-4
+                .panel.panel-danger.control-panel
+                    .panel-heading
+                    .panel-body.center-parent(data-bind="template: 'controlPanelTemplate'")
+                    script(id='controlPanelTemplate', type='text/html')
+                        .row.center-child
+                            .col-md-7
+                                h3.status(data-bind='text: game.gameStatus, css: game.gameStatusCss')
+                            .col-md-5
+                                div(data-bind='if: game.timerRunning')
+                                    div.timer-parent
+                                        span.timer.label(data-bind='text: game.timer, css: game.timerCss')
+            .col-md-3
+                div(data-bind="template: 'playersPanelTemplate'")
+                script(id='playersPanelTemplate', type='text/html')
+                    div(data-bind="if: game.isMultiplayer")
+                        .label.label-default Players
+                        .panel.panel-default.players-panel
+                            div(data-bind="if: loaded() && game.players().length > 0")
+                                .panel-body(data-bind="foreach: game.players")
+                                    .row
+                                        .progress.progress-striped.progress-labeled.active(data-bind="css: cssClass")
+                                            .progress-label(data-bind="text: formattedName(20), css: cssClass")
+                                            .progress-bar.progress-labeled(data-bind="css: 'progress-bar-' + colorClass(), style: { width: percentage() + '%' }")
+                                                .progress-label(data-bind="text: formattedName(20)")
+                            div(data-bind='if: loaded() && game.players().length == 0')
+                                .panel-body
+                                    .row
+                                        .progress.progress-labeled
+                                            .progress-label.text-primary None yet
+            .col-md-1
+        .row
+            .col-md-1
+            .col-md-10
+                .row
+                    pre
+                        code.code(data-bind='css: game.langCss')
+                            span#gamecode(data-bind='text: game.gamecode')
+                            span.loading-container(data-bind='visible: loading')
+                                img(src='/img/loading.gif')
+                .row
+                    .col-md-3(data-bind="if: game.projectName")
+                        span.label.label-info(data-bind="text: 'Code taken from ' + game.projectName()")
+                    .col-md-3.pull-right
+                        a.pull-right(href='', data-bind='click: submitHighlightingReport')
+                            span.highlight-flag.label.label-default Syntax highlighting doesn't look right?
+            .col-md-1
+        #completion-dialog.completion-dialog.modal.fade(tabindex='-1', role='dialog', data-backdrop='static', data-keyboard='false')
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h3.completion-header.text-info(data-bind='text: completionText')
+                    .modal-body
+                        .col-md-1
+                        .col-md-10.completion-table
+                            .row
+                                .col-md-8 Time:
+                                .col-md-4
+                                    span(data-bind='text: stats.time')
+                            .row
+                                .col-md-8 Speed:
+                                .col-md-4
+                                    span(data-bind='text: stats.speed')
+                                    span.muted wpm
+                            .row
+                                .col-md-8 Keystrokes:
+                                .col-md-4
+                                    span(data-bind='text: stats.keystrokes')
+                            .row
+                                .col-md-8 Characters:
+                                .col-md-4
+                                    span(data-bind='text: stats.typeables')
+                            .row
+                                .col-md-8 Unproductive:
+                                .col-md-4
+                                    span(data-bind='text: stats.percentUnproductive')
+                                    span.muted %
+                            .row
+                                .col-md-8 Mistakes:
+                                .col-md-4
+                                    span(data-bind='text: stats.mistakes')
+                        .col-md-1
+                        .clearfix
+                    .modal-footer
+                        a.btn.btn-primary(href='/lobby') Back to lobby
+                        // ko if: game.isMultiplayer
+                        a.btn.btn-default(data-bind='click: hideCompletionDialog') Continue watching
+                        // /ko

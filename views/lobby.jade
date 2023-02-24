@@ -1,0 +1,71 @@
+extends layout
+
+block scripts
+    script(src='/js/libs/knockout-2.3.0.min.js')
+    script(src='/js/libs/favico.min.js')
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/lobby.js')
+
+block content
+    .container
+        .row
+            .col-md-1
+            .col-md-6
+                .well
+                    fieldset
+                        legend Join Game
+                        .panel.panel-primary.lobby
+                            .panel-heading Lobby
+                                span.pull-right(data-bind="template: 'lobbycountTemplate'")
+                                script(id='lobbycountTemplate', type='text/html')
+                                    span.badge(data-bind='text: lobbycount')
+                                    span(data-bind="text: lobbycount() === 1 ? ' player' : ' players'")
+                            .panel-body(data-bind="template: 'lobbyTemplate'")
+                            script(id='lobbyTemplate', type='text/html')
+                                table.table.table-striped.table-hover
+                                    colgroup
+                                        col(width='40px')
+                                        col(width='140px')
+                                        col(width='100px')
+                                        col(width='110px')
+                                        col(width='90px')
+                                    thead
+                                        th #
+                                        th Language
+                                        th Players
+                                        th Status
+                                        th
+                                    tbody(data-bind='foreach: games')
+                                        tr.game-row
+                                            td(data-bind='text: num')
+                                            td(data-bind='text: langName')
+                                            td
+                                                span(data-bind='text: numPlayers')
+                                                /
+                                                span(data-bind='text: maxPlayers')
+                                            td(data-bind='text: statusText, css: statusCss')
+                                            td
+                                                button.join-btn.btn.btn-success.btn-sm(data-bind='visible: isJoinable, css: joinCss, click: join') Join
+                                    tbody(data-bind='if: loaded() && games().length == 0')
+                                        tr.game-row.no-games
+                                            td(colspan='5') There are no available games! Make a new one.
+                                .loading-container(data-bind='visible: loading')
+                                    img(src='/img/loading.gif')
+            .col-md-4
+                .slide-panel-container
+                    .slide-panel.gametype-container
+                        .well
+                            fieldset.languages
+                                legend New Game
+                                button.game-type.btn.btn-info.btn-block(type='button', data-bind="click: setGameType.bind($root, 'single')") Single-player
+                                button.game-type.btn.btn-info.btn-block(type='button', data-bind="click: setGameType.bind($root, 'multi')") Multiplayer
+                    .slide-panel.lang-container
+                        .well
+                            fieldset.languages
+                                legend Choose Language
+                                    button.back-btn.btn.btn-primary.btn-xs.pull-right(type='button', data-bind='click: slideBack') <span class="glyphicon glyphicon-chevron-left"></span> Back
+                                .language-list
+                                    each l in langs
+                                        button.lang.btn.btn-danger.btn-block(type='button', class='lang-#{l.key}', data-bind="click: newGame.bind($data, '#{l.key}')")= l.name
+                .clearfix
+            .col-md-1

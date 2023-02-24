@@ -1,0 +1,30 @@
+.navbar.navbar-inverse
+    .container
+        a.navbar-brand.logo(href='/') Swift<span class="inverse">CODE</span>
+        ul.nav.navbar-nav
+            li(class= path=='/lobby' ? 'active' : '')
+                a(href='/lobby') Lobby
+            li(class= path=='/game' ? 'active' : '')
+                a(href='/game') Game
+            li(class= path=='/about' ? 'active' : '')
+                a(href='/about') About
+        if !user
+            form.navbar-form.pull-right.form-parsley(action='/login', method='POST')
+                .form-group
+                    input.form-control(type='text', placeholder='Username', name='username', autofocus=path === '/', data-required='true', data-rangelength='[2, 32]', data-placement='bottom')
+                .form-group
+                    input.form-control(type='password', placeholder='Password', name='password', data-required='true', data-minlength='8', data-placement='bottom')
+                button.btn(type='submit') Log in
+        else
+            ul.nav.navbar-nav.pull-right
+                li.dropdown
+                    a.dropdown-toggle(href='#', data-toggle='dropdown')= user.username
+                        //- The below is an empty space after the username
+                        | 
+                        b.caret
+                    ul.dropdown-menu
+                        if user.isAdmin
+                            li
+                                a(href='/admin') Admin
+                        li
+                            a(href='/logout') Log out

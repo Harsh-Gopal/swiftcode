@@ -1,0 +1,55 @@
+{
+  "name": "SwiftCODE",
+  "version": "1.0.11",
+  "description": "Realtime typing speed game for coders",
+  "keywords": [
+    "typing",
+    "game",
+    "realtime"
+  ],
+  "author": {
+    "name": "Zaven Muradyan",
+    "email": "megalivoithos@gmail.com"
+  },
+  "homepage": "http://swiftcode.herokuapp.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/voithos/swiftcode"
+  },
+  "engines": {
+    "node": "8.x"
+  },
+  "dependencies": {
+    "bcrypt": "1.0.3",
+    "cheerio": "0.12.1",
+    "connect": "2.10.1",
+    "connect-flash": "0.1.1",
+    "debug": "2.2.0",
+    "express": "3.3.5",
+    "helmet": "0.1.0",
+    "highlight.js": "7.5.0",
+    "jade": "0.34.1",
+    "lodash": "1.3.1",
+    "moment": "2.1.0",
+    "mongoose": "5.5.11",
+    "passport": "0.1.17",
+    "passport-local": "0.1.6",
+    "passport-local-mongoose": "5.0.1",
+    "session-mongoose": "0.5.2",
+    "socket.io": "2.2.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-watch": "~0.5.2",
+    "prompt": "~0.2.11",
+    "forever-monitor": "~1.2.3"
+  },
+  "bundleDependencies": [],
+  "private": true,
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "subdomain": "swiftcode"
+}
